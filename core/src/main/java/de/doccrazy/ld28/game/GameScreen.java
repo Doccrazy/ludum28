@@ -1,14 +1,21 @@
 package de.doccrazy.ld28.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+import de.doccrazy.ld28.core.Resource;
+
 public class GameScreen implements Screen {
-    public static int SCREEN_WIDTH = 1280;
-    public static int SCREEN_HEIGHT = 720;
+    public static int SCREEN_WIDTH = 800;
+    public static int SCREEN_HEIGHT = 480;
 
     private GameWorld world; // contains the game world's bodies and actors.
     private GameRenderer renderer; // our custom game renderer.
@@ -18,11 +25,21 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		stage.addActor(new TestActor());
+		//stage.addActor(new TestActor());
 
         world = new GameWorld();
         renderer = new GameRenderer(world);
+
+		Gdx.input.setInputProcessor(new InputMultiplexer(stage, world.stage));
+		stage.getRoot().addListener(new InputListener() {
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				if (keycode == Keys.ENTER) {
+					world.reset();
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override
@@ -36,6 +53,11 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         guiCam.update();
+
+        SpriteBatch batch = new SpriteBatch();
+        batch.begin();
+        batch.draw(Resource.background, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        batch.end();
 
         renderer.render(); // draw the box2d world
         stage.draw(); // draw the GUI

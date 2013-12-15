@@ -48,9 +48,6 @@
 			<resource>
 				<directory>../assets</directory>
 			</resource>
-			<resource>
-				<directory>../assets_generated</directory>
-			</resource>
 		</resources>
 
 		<plugins>
@@ -111,6 +108,28 @@
 					</execution>
 				</executions>
 			</plugin>
+	      <plugin>
+	        <groupId>pm.monkey.maven.plugins.texturepacker</groupId>
+	        <artifactId>texturepacker-maven-plugin</artifactId>
+	        <version>1.0-SNAPSHOT</version>
+	        <configuration>
+	          <inputDir>../assets_src</inputDir>
+	          <outputDir>${project.build.outputDirectory}</outputDir>
+	          <packFileName>game.atlas</packFileName>
+			<filterMag>Linear</filterMag>
+			<filterMin>MipMapLinearLinear</filterMin>
+			<wrapX>Repeat</wrapX>
+			<wrapY>Repeat</wrapY>
+	        </configuration>
+	        <executions>
+	          <execution>
+	            <id>pack</id>
+	            <goals>
+	              <goal>pack</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	      </plugin>
 		</plugins>
 	</build>
 </project>
