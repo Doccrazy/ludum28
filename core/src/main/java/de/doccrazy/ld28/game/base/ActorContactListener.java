@@ -19,10 +19,10 @@ public class ActorContactListener implements ContactListener {
 		Vector2 normal = contact.getWorldManifold().getNormal();
 		Vector2 contactPoint = contact.getWorldManifold().getPoints()[0];
 		if (a.getUserData() instanceof CollisionListener) {
-			((CollisionListener)a.getUserData()).beginContact(b, normal, contactPoint);
+			((CollisionListener)a.getUserData()).beginContact(a, b, normal, contactPoint);
 		}
 		if (b.getUserData() instanceof CollisionListener) {
-			((CollisionListener)b.getUserData()).beginContact(a, normal, contactPoint);
+			((CollisionListener)b.getUserData()).beginContact(b, a, normal, contactPoint);
 		}
 	}
 

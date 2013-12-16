@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import de.doccrazy.ld28.core.Resource;
+import de.doccrazy.ld28.game.ui.UiRoot;
 
 public class GameScreen implements Screen {
     public static int SCREEN_WIDTH = 800;
@@ -21,6 +22,7 @@ public class GameScreen implements Screen {
     private GameRenderer renderer; // our custom game renderer.
     private Stage stage; // stage that holds the GUI. Pixel-exact size.
     private OrthographicCamera guiCam; // camera for the GUI. It's the stage default camera.
+    private SpriteBatch batch = new SpriteBatch();
 
 	@Override
 	public void show() {
@@ -37,9 +39,14 @@ public class GameScreen implements Screen {
 				if (keycode == Keys.ENTER) {
 					world.reset();
 				}
+				if (keycode == Keys.F) {
+					world.getPlayer().toggleFlyMode();
+				}
 				return false;
 			}
 		});
+
+		stage.addActor(new UiRoot(world));
 	}
 
 	@Override
@@ -54,7 +61,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         guiCam.update();
 
-        SpriteBatch batch = new SpriteBatch();
+        batch.setProjectionMatrix(stage.getCamera().combined);
         batch.begin();
         batch.draw(Resource.background, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         batch.end();
@@ -70,7 +77,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		stage.setViewport(SCREEN_WIDTH, SCREEN_HEIGHT, true);
+		stage.setViewport(SCREEN_WIDTH, SCREEN_HEIGHT, false);
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class GameRenderer implements ActorListener {
     private GameWorld world;
     private OrthographicCamera camera;
     private Box2DDebugRenderer renderer;
-    private Vector2 cameraPos;
+    private Vector2 playerPos, cameraPos = new Vector2(-100, 100);
 
     public GameRenderer(GameWorld world) {
         this.world = world;
@@ -48,10 +48,12 @@ public class GameRenderer implements ActorListener {
 
         // have the camera follow bob
         if (world.getPlayer() != null) {
-        	cameraPos = new Vector2(world.getPlayer().getX(), world.getPlayer().getY());
+        	playerPos = new Vector2(world.getPlayer().getX() + 5f, world.getPlayer().getY());
         }
-    	camera.position.x = clip(camera.position.x, cameraPos.x - CAMERA_WINDOW.x, cameraPos.x + CAMERA_WINDOW.x);
-    	camera.position.y = clip(camera.position.y, cameraPos.y - CAMERA_WINDOW.y, cameraPos.y + CAMERA_WINDOW.y);
+    	cameraPos.x = clip(cameraPos.x, playerPos.x - CAMERA_WINDOW.x, playerPos.x + CAMERA_WINDOW.x);
+    	cameraPos.y = clip(cameraPos.y, playerPos.y - CAMERA_WINDOW.y, playerPos.y + CAMERA_WINDOW.y);
+    	camera.position.x = cameraPos.x;
+    	camera.position.y = cameraPos.y;
 	}
 
 	private float clip(float value, float min, float max) {

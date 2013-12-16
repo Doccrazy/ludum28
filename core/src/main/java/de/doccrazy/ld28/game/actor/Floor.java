@@ -47,7 +47,7 @@ public class Floor extends Box2dActor implements CollisionListener {
 	}
 
 	@Override
-	public void beginContact(Body other, Vector2 normal, Vector2 contactPoint) {
+	public void beginContact(Body me, Body other, Vector2 normal, Vector2 contactPoint) {
 		if (other.getUserData() instanceof Player) {
 			world.spawnDeathPortal();
 		}

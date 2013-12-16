@@ -25,16 +25,18 @@ import de.doccrazy.ld28.game.base.CollisionListener;
 import de.doccrazy.ld28.game.base.MovementInputListener;
 
 public class Player extends Box2dActor implements CollisionListener {
+	public static final float RADIUS = 0.4f;
 	private static final int CONTACT_TTL = 50;
 	private static final float VELOCITY = 10.f;
-	public static final float RADIUS = 0.4f;
-	private static final float JUMP_IMPULSE = 200f;
+	private static final float JUMP_IMPULSE = 250f;
+	private static final float AIR_CONTROL = 100f;
 
 	private MovementInputListener movement;
 	private Map<Body, ContactInfo> floorContacts = new HashMap<Body, ContactInfo>();
 	private ConeLight light;
 	private float orientation = 1;
 	private boolean dead;
+	private boolean flyMode;
 
 	public Player(GameWorld world, Vector2 spawn) {
 		super(world);
@@ -45,7 +47,7 @@ public class Player extends Box2dActor implements CollisionListener {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
         bodyDef.position.x = spawn.x;
-        bodyDef.position.y = spawn.y + RADIUS;
+        bodyDef.position.y = spawn.y + RADIUS + 0.1f;
         bodyDef.linearDamping = 0.1f;
         bodyDef.angularDamping = 0.5f;
 
@@ -102,13 +104,26 @@ public class Player extends Box2dActor implements CollisionListener {
      	} else if (mv.x > 0) {
      		orientation = 1;
      	}
-     	//body.applyForceToCenter(mv, true);
-     	body.setAngularVelocity(-mv.x*VELOCITY);
-     	if (movement.pollJump() && floorContacts.size() > 0) {
-     		body.applyLinearImpulse(0f, JUMP_IMPULSE, 0, 0, true);
+     	if (flyMode) {
+     		body.applyForceToCenter(new Vector2(0, body.getMass() * 9.8f), true);
+     		mv.scl(body.getMass() * 10f);
+     		body.applyForceToCenter(mv, true);
+     	} else {
+	     	if (touchingFloor()) {
+	     		body.setAngularVelocity(-mv.x*VELOCITY);
+	     	} else {
+	     		body.applyForceToCenter(mv.x * AIR_CONTROL, 0f, true);
+	     	}
+     	}
+     	if (movement.pollJump() && touchingFloor()) {
+     		body.applyLinearImpulse(0f, JUMP_IMPULSE, body.getPosition().x, body.getPosition().y, true);
      		floorContacts.clear();
      	}
 	}
+
+    private boolean touchingFloor() {
+    	return floorContacts.size() > 0;
+    }
 
 	@Override
     public void draw(Batch batch, float parentAlpha) {
@@ -151,8 +166,8 @@ public class Player extends Box2dActor implements CollisionListener {
 	}
 
 	@Override
-	public void beginContact(Body other, Vector2 normal, Vector2 contactPoint) {
-		if (normal.y > 0.707f) {   //45 deg
+	public void beginContact(Body me, Body other, Vector2 normal, Vector2 contactPoint) {
+		if (normal.y > 0.707f && !other.getFixtureList().get(0).isSensor()) {   //45 deg
 			addFloorContact(other, contactPoint);
 		}
 	}
@@ -182,5 +197,9 @@ public class Player extends Box2dActor implements CollisionListener {
 
 	public void setDead(boolean dead) {
 		this.dead = dead;
+	}
+
+	public void toggleFlyMode() {
+		flyMode = !flyMode;
 	}
 }

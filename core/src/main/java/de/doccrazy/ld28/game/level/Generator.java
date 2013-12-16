@@ -11,7 +11,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
+
+import de.doccrazy.ld28.game.GameWorld;
 
 public class Generator {
 	private static float TOP_LAYER_HEIGHT = 0.5f;
@@ -23,9 +24,10 @@ public class Generator {
 
 	private List<JoinPoint> openJoints;
 	private List<Rectangle> rects;
-	private World world;
+	private GameWorld world;
+	private List<Body> levelElements = new ArrayList<>();
 
-	public Generator(World world, float x0, float y0, float width, float height) {
+	public Generator(GameWorld world, float x0, float y0, float width, float height) {
 		this.world = world;
 		this.x0 = x0;
 		this.y0 = y0;
@@ -37,6 +39,7 @@ public class Generator {
 	 * @return a possible spawnpoint (bottom center)
 	 */
 	public Vector2 generate() {
+		levelElements.clear();
 		Vector2 result = null;
 		boolean hadFirstTop = false;
 		float curx = x0;
@@ -64,7 +67,7 @@ public class Generator {
 			}
 		}
 
-		while (curx < width) {
+		while (curx < x0 + width || openJoints.size() > 0) {
 			if (openJoints.size() > 0) {
 				JoinPoint leftJoint = openJoints.get(0), newJoint = null;
 				ElementType el = null;
@@ -90,10 +93,11 @@ public class Generator {
 				}
 				openJoints.remove(0);
 				if (el != null) {
-					if (!placeMid && !hadFirstTop) {
+					/*if (!placeMid && !hadFirstTop) {
 						hadFirstTop = true;
 						result = new Vector2(tmp.x + tmp.width/2, tmp.y + tmp.height);
-					}
+					}*/
+					result = new Vector2(tmp.x + tmp.width, tmp.y + tmp.height);
 					place(el, tmp);
 					//System.out.println("Place: " + tmp.x + " " + tmp.y);
 					for (JoinPoint joint : el.getJoints()) {
@@ -143,6 +147,7 @@ public class Generator {
         BodyDef bd = new BodyDef();
         bd.position.set(tmp.x, tmp.y);
         bd.type = BodyType.DynamicBody;
+        bd.active = false;
 
         // 2. Create a FixtureDef, as usual.
         FixtureDef fd = new FixtureDef();
@@ -150,9 +155,10 @@ public class Generator {
         fd.friction = 0.8f;
         fd.restitution = 0f;
 
-        Body pillar = world.createBody(bd);
+        Body pillar = world.box2dWorld.createBody(bd);
     	type.attach(pillar, fd);
     	rects.add(tmp);
+    	levelElements.add(pillar);
 	}
 
 	private boolean collides(Rectangle tmp, List<Rectangle> rects) {
@@ -174,5 +180,9 @@ public class Generator {
 		all.addAll(list);
 		all.addAll(list2);
 		return select(all);
+	}
+
+	public List<Body> getLevelElements() {
+		return levelElements;
 	}
 }

@@ -19,6 +19,7 @@ public enum ElementType {
 	pillarMedium(Resource.pillar, 5, new JoinPoint[]{new JoinPoint(0, 0, false), new JoinPoint(0, 0.3f, true)}),
 	//split(Resource.pillar, 5, new JoinPoint[]{new JoinPoint(0.275f, 0, false), new JoinPoint(0, 0.275f, true), new JoinPoint(0.525f, 0.275f, true)}),
 	//split2(Resource.pillar, 5, new JoinPoint[]{new JoinPoint(0.275f, 0.275f, true), new JoinPoint(0, 0, false), new JoinPoint(0.525f, 0, false)}),
+	top(Resource.pillar, 5, new JoinPoint[]{new JoinPoint(0.1f, 0, false)}),
 	top2(Resource.pillar, 5, new JoinPoint[]{new JoinPoint(0.1f, 0, false)}),
 	//lightPost(Resource.pillar, 5f, new JoinPoint[]{new JoinPoint(0, 0, false)}),
 	bottom(Resource.pillar, 5f, new JoinPoint[]{new JoinPoint(0.075f, 0.15f, true)}),

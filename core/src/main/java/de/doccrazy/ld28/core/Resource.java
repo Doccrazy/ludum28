@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -25,6 +26,7 @@ public class Resource {
 	public static Sprite subway;
 
 	public static Sprite[] bodyparts = new Sprite[3];
+	public static BitmapFont fontBig;
 
 	private Resource() {
 	}
@@ -51,5 +53,7 @@ public class Resource {
 		bodyparts[2] = atlasGame.createSprite("bodypart3");
 
 		pillar = new BodyEditorLoader(Gdx.files.internal("pillar.json"));
+
+		fontBig = new BitmapFont(Gdx.files.internal("big.fnt"), Gdx.files.internal("big.png"), false);
 	}
 }
