@@ -39,12 +39,12 @@ public class GameScreen implements Screen {
 				if (keycode == Keys.ENTER) {
 					world.reset();
 				}
-				if (keycode == Keys.F) {
+				/*if (keycode == Keys.F) {
 					world.getPlayer().toggleFlyMode();
 				}
 				if (keycode == Keys.Z) {
 					renderer.setZoom(7.0f);
-				}
+				}*/
 				return false;
 			}
 		});
