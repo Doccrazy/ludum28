@@ -15,8 +15,8 @@ import de.doccrazy.ld28.core.Resource;
 import de.doccrazy.ld28.game.ui.UiRoot;
 
 public class GameScreen implements Screen {
-    public static int SCREEN_WIDTH = 800;
-    public static int SCREEN_HEIGHT = 480;
+    public static int SCREEN_WIDTH = 1280;
+    public static int SCREEN_HEIGHT = 720;
 
     private GameWorld world; // contains the game world's bodies and actors.
     private GameRenderer renderer; // our custom game renderer.
@@ -41,6 +41,9 @@ public class GameScreen implements Screen {
 				}
 				if (keycode == Keys.F) {
 					world.getPlayer().toggleFlyMode();
+				}
+				if (keycode == Keys.Z) {
+					renderer.setZoom(7.0f);
 				}
 				return false;
 			}

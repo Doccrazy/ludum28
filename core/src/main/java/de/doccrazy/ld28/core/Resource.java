@@ -3,6 +3,7 @@ package de.doccrazy.ld28.core;
 import aurelienribon.bodyeditor.BodyEditorLoader;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -17,6 +18,7 @@ public class Resource {
 	public static Texture tex;
 
 	public static Sprite playerStand;
+	public static Animation playerWalk;
 	public static Texture scifi1;
 	public static Texture scifi2;
 	public static BodyEditorLoader pillar;
@@ -26,7 +28,12 @@ public class Resource {
 	public static Sprite subway;
 
 	public static Sprite[] bodyparts = new Sprite[3];
-	public static BitmapFont fontBig;
+	public static BitmapFont fontBig, fontSmall;
+	public static Sound die;
+	public static Sound checkpoint;
+	public static Sound jump;
+	public static Sound subwayFx;
+	public static Sound start;
 
 	private Resource() {
 	}
@@ -38,6 +45,7 @@ public class Resource {
 
 		TextureAtlas atlasGame = new TextureAtlas(Gdx.files.internal("game.atlas"));
 		playerStand = atlasGame.createSprite("stand");
+		playerWalk = new Animation(0.2f, atlasGame.findRegions("walk"));
 		scifi1 = new Texture(Gdx.files.internal("scifi1.png"));
 		scifi1.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		scifi2 = new Texture(Gdx.files.internal("scifi2.png"));
@@ -55,5 +63,12 @@ public class Resource {
 		pillar = new BodyEditorLoader(Gdx.files.internal("pillar.json"));
 
 		fontBig = new BitmapFont(Gdx.files.internal("big.fnt"), Gdx.files.internal("big.png"), false);
+		fontSmall = new BitmapFont(Gdx.files.internal("small.fnt"), Gdx.files.internal("small.png"), false);
+
+		die = Gdx.audio.newSound(Gdx.files.internal("die.wav"));
+		checkpoint = Gdx.audio.newSound(Gdx.files.internal("checkpoint.wav"));
+		jump = Gdx.audio.newSound(Gdx.files.internal("jump.wav"));
+		subwayFx = Gdx.audio.newSound(Gdx.files.internal("subway.wav"));
+		start = Gdx.audio.newSound(Gdx.files.internal("start.wav"));
 	}
 }

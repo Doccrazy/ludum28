@@ -18,6 +18,7 @@ public class GameRenderer implements ActorListener {
     private OrthographicCamera camera;
     private Box2DDebugRenderer renderer;
     private Vector2 playerPos, cameraPos = new Vector2(-100, 100);
+	private float zoom = 1;
 
     public GameRenderer(GameWorld world) {
         this.world = world;
@@ -44,7 +45,7 @@ public class GameRenderer implements ActorListener {
     }
 
 	private void positionCamera() {
-        world.stage.setViewport(UNIT_WIDTH, UNIT_HEIGHT, false); // set the game stage viewport to the meters size
+        world.stage.setViewport(UNIT_WIDTH*zoom, UNIT_HEIGHT*zoom, false); // set the game stage viewport to the meters size
 
         // have the camera follow bob
         if (world.getPlayer() != null) {
@@ -66,5 +67,9 @@ public class GameRenderer implements ActorListener {
 
 	@Override
 	public void actorRemoved(Box2dActor actor) {
+	}
+
+	public void setZoom(float zoom) {
+		this.zoom = zoom;
 	}
 }

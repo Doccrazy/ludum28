@@ -8,14 +8,15 @@ import de.doccrazy.ld28.core.Resource;
 import de.doccrazy.ld28.game.GameScreen;
 import de.doccrazy.ld28.game.GameWorld;
 
-public class DeathLabel extends Label {
+public class TryAgainLabel extends Label {
 	private GameWorld world;
+	private int highscore = 0;
 
-	public DeathLabel(GameWorld world) {
-		super("You died!", new LabelStyle(Resource.fontBig, new Color(1f, 0.4f, 0.3f, 0.7f)));
+	public TryAgainLabel(GameWorld world) {
+		super("Press ENTER to try again", new LabelStyle(Resource.fontSmall, new Color(1f, 0.4f, 0.3f, 0.7f)));
 		this.world = world;
 
-		setPosition(0, 500);
+		setPosition(0, GameScreen.SCREEN_HEIGHT - 50);
 		setWidth(GameScreen.SCREEN_WIDTH);
 		setAlignment(Align.center);
 	}
@@ -23,7 +24,8 @@ public class DeathLabel extends Label {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		setVisible(world.getPlayer() == null);
+		boolean below = world.getPlayer() == null || world.getPlayer().getBody().getPosition().y < 2f;
+		setVisible(below && System.currentTimeMillis() % 500 < 250);
 	}
 
 }

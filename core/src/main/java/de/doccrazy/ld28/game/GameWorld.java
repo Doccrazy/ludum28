@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+import de.doccrazy.ld28.core.Resource;
 import de.doccrazy.ld28.game.actor.BodypartActor;
 import de.doccrazy.ld28.game.actor.CheckpointActor;
 import de.doccrazy.ld28.game.actor.DeathPortalActor;
@@ -33,6 +34,7 @@ public class GameWorld {
     private static float PHYSICS_STEP = 1f/300f;
 
     public static final Vector2 GRAVITY = new Vector2(0, -9.8f);
+    private static final Vector2 SPAWN = new Vector2(-4f, 4.5f);
 
     public final Stage stage; // stage containing game actors (not GUI, but actual game elements)
     public final World box2dWorld; // box2d world
@@ -48,8 +50,12 @@ public class GameWorld {
 	private float rightmost;
 	private List<RemoveEntry> levelRemoveList = new ArrayList<>();
 
+	private int checkpointIdx;
+	private float maxDistance;
+
     public GameWorld() {
         box2dWorld = new World(GRAVITY, true);
+        box2dWorld.setContactListener(new ActorContactListener());
         stage = new Stage(); // create the game stage
         rayHandler = new RayHandler(box2dWorld);
 
@@ -57,6 +63,9 @@ public class GameWorld {
     }
 
     public void reset() {
+    	checkpointIdx = 0;
+    	maxDistance = 0;
+
 		player = null;
 		currentLevel = null;
 		rightmostCp = null;
@@ -80,15 +89,14 @@ public class GameWorld {
     }
 
     private void createWorld() {
-        box2dWorld.setContactListener(new ActorContactListener());
     	new Floor(this, 0f);
 
     	rightmost = -8.5f;
     	genBlock();
     	currentLevel.setActive(true);
-    	rightmostCp.activate();
+    	rightmostCp.activate(false);
 
-    	player = new Player(this, new Vector2(-4f, 4.5f));
+    	player = new Player(this, SPAWN);
     	stage.setKeyboardFocus(getPlayer());
 
     	/*pillar(-2, 0);
@@ -107,6 +115,8 @@ public class GameWorld {
         create(ElementType.split, 18, 0f);
         create(ElementType.split2, 20, 0f);
         create(ElementType.top2, 24, 0f);*/
+
+    	Resource.start.play();
     }
 
 	private void pillar(float x, float y) {
@@ -144,13 +154,9 @@ public class GameWorld {
     	for (Iterator<RemoveEntry> it = levelRemoveList.iterator(); it.hasNext(); ) {
     		RemoveEntry entry = it.next();
     		if (player != null && player.getBody().getPosition().x > entry.at) {
-    			System.out.println("R1");
     			entry.level.remove();
-    			System.out.println("R2");
     			entry.cp.remove();
-    			System.out.println("R3");
     			it.remove();
-    			System.out.println("R4");
     		}
     	}
 
@@ -160,6 +166,10 @@ public class GameWorld {
     		box2dWorld.step(PHYSICS_STEP, 6, 3); // update box2d world
     		deltaCache -= PHYSICS_STEP;
     	}
+
+    	if (player != null) {
+    		maxDistance = Math.max(maxDistance, player.getBody().getPosition().x - SPAWN.x);
+    	}
     }
 
 	private void genBlock() {
@@ -168,9 +178,10 @@ public class GameWorld {
 			scheduleRemove(currentLevel, rightmostCp, rightmost + GameRenderer.UNIT_WIDTH);
 		}
 
-		rightmostCp = new CheckpointActor(this, rightmost + 2.5f);
+		rightmostCp = new CheckpointActor(this, rightmost + 2.5f, checkpointIdx * 0.2f);
 
-		Generator gen = new Generator(this, rightmostCp.getRight(), 0f, 30f, 3f);
+		Generator gen = new Generator(this, rightmostCp.getRight(), 0f, 30f, 3f + checkpointIdx * 0.2f);
+		gen.setDistance(1.0f + checkpointIdx*0.25f);
 		rightmost = gen.generate().x;
 		currentLevel = new LevelActor(this, gen.getLevelElements());
 	}
@@ -221,11 +232,25 @@ public class GameWorld {
 			for (int i = 0; i < 20; i++) {
 				new BodypartActor(this, pos);
 			}
+			Resource.die.play();
 		}
 	}
 
-	public void generateLevel() {
+	public void checkpointReached() {
+		checkpointIdx++;
 		doGenerate = true;
+	}
+
+	public float getMaxDistance() {
+		return maxDistance;
+	}
+
+	public int getCheckpointIdx() {
+		return checkpointIdx;
+	}
+
+	public int getScore() {
+		return (int) (getMaxDistance() * getCheckpointIdx());
 	}
 
 	private static class RemoveEntry {

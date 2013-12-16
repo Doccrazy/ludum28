@@ -9,6 +9,7 @@ import box2dLight.ConeLight;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -37,6 +38,7 @@ public class Player extends Box2dActor implements CollisionListener {
 	private float orientation = 1;
 	private boolean dead;
 	private boolean flyMode;
+	private float stateTime = 0f;
 
 	public Player(GameWorld world, Vector2 spawn) {
 		super(world);
@@ -83,6 +85,7 @@ public class Player extends Box2dActor implements CollisionListener {
     public void act(float delta) {
         super.act(delta);
 
+        stateTime += delta;
         processContacts();
         move(delta);
     }
@@ -118,6 +121,7 @@ public class Player extends Box2dActor implements CollisionListener {
      	if (movement.pollJump() && touchingFloor()) {
      		body.applyLinearImpulse(0f, JUMP_IMPULSE, body.getPosition().x, body.getPosition().y, true);
      		floorContacts.clear();
+     		Resource.jump.play();
      	}
 	}
 
@@ -140,8 +144,12 @@ public class Player extends Box2dActor implements CollisionListener {
         mat.trn(getX() + getOriginX(), getY() + getOriginY(), 0);
         mat.scale(orientation, 1, 1);
         batch.setTransformMatrix(mat);
-        batch.draw(Resource.playerStand, -getOriginX(), -getOriginY(), 0, 0,
-    			RADIUS*2, RADIUS*3, getScaleX(), getScaleY(), 0);
+        TextureRegion frame = Resource.playerStand;
+        if (movement.getMovement().x != 0) {
+        	frame = Resource.playerWalk.getKeyFrame(stateTime, true);
+        }
+        batch.draw(frame, -getOriginX(), -getOriginY(), 0, 0,
+        		RADIUS*2, RADIUS*3, getScaleX(), getScaleY(), 0);
         batch.setTransformMatrix(old);
     }
 

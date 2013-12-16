@@ -28,11 +28,11 @@ public class CheckpointActor extends Box2dActor implements CollisionListener {
 	private Body trigger;
 	private boolean active;
 
-	public CheckpointActor(GameWorld world, float x) {
+	public CheckpointActor(GameWorld world, float x0, float y0) {
 		super(world);
 
-		createBody(x);
-		createTrigger(x);
+		createBody(x0, y0);
+		createTrigger(x0, y0);
 
 		createLight(body, new Vector2(0f, 0.275f));
 		createLight(body, new Vector2(0.875f, 0.275f));
@@ -44,11 +44,11 @@ public class CheckpointActor extends Box2dActor implements CollisionListener {
 		createLight(body, new Vector2(0.875f, 0.65f));
 	}
 
-	private void createBody(float x) {
+	private void createBody(float x, float y) {
 		// Create our body definition
 		BodyDef bodyDef = new BodyDef();
 		// Set its world position
-		bodyDef.position.set(new Vector2(x, 0));
+		bodyDef.position.set(new Vector2(x, y));
 		bodyDef.type = BodyType.StaticBody;
 
         FixtureDef fd = new FixtureDef();
@@ -62,11 +62,11 @@ public class CheckpointActor extends Box2dActor implements CollisionListener {
 		Resource.pillar.attachFixture(body, "checkpointBottom", fd, SCALE);
 	}
 
-	private void createTrigger(float x) {
+	private void createTrigger(float x, float y) {
 		// Create our body definition
 		BodyDef bodyDef = new BodyDef();
 		// Set its world position
-		bodyDef.position.set(new Vector2(x + (0.4375f * SCALE), 0.75f * SCALE));
+		bodyDef.position.set(new Vector2(x + 0.4375f * SCALE, y + 0.75f * SCALE));
 		bodyDef.type = BodyType.StaticBody;
 
         trigger = world.box2dWorld.createBody(bodyDef);
@@ -88,13 +88,16 @@ public class CheckpointActor extends Box2dActor implements CollisionListener {
 		lights.add(light);
 	}
 
-	public void activate() {
+	public void activate(boolean sfx) {
 		if (!active) {
 			active = true;
 			for (Light light : lights) {
 				light.setColor(0f, 0.5f, 0f, 1f);
 			}
-			world.generateLevel();
+			world.checkpointReached();
+			if (sfx) {
+				Resource.checkpoint.play();
+			}
 		}
 	}
 
@@ -111,7 +114,7 @@ public class CheckpointActor extends Box2dActor implements CollisionListener {
 	@Override
 	public void beginContact(Body me, Body other, Vector2 normal, Vector2 contactPoint) {
 		if (me == trigger && other.getUserData() == world.getPlayer()) {
-			activate();
+			activate(true);
 		}
 	}
 
@@ -122,6 +125,15 @@ public class CheckpointActor extends Box2dActor implements CollisionListener {
 	@Override
 	public float getRight() {
 		return body.getPosition().x + 0.875f * SCALE;
+	}
+
+	@Override
+	public boolean remove() {
+		boolean ret = super.remove();
+		if (ret) {
+			world.box2dWorld.destroyBody(trigger);
+		}
+		return ret;
 	}
 
 }

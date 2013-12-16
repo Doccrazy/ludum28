@@ -11,5 +11,9 @@ public class UiRoot extends Group {
 		this.world = world;
 
 		addActor(new DeathLabel(world));
+		addActor(new ScoreLabel(world));
+		addActor(new CheckpointLabel(world));
+		addActor(new HighscoreLabel(world));
+		addActor(new TryAgainLabel(world));
 	}
 }

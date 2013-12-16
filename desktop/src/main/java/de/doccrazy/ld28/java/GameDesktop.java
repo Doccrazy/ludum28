@@ -13,7 +13,7 @@ public class GameDesktop {
 		config.width = GameScreen.SCREEN_WIDTH;
 		config.height = GameScreen.SCREEN_HEIGHT;
 		config.vSyncEnabled = true;
-		config.title = "Ludum Dare 28";
+		config.title = "Anomaly One (a Ludum Dare 28 game by d0ccrazy)";
 		new LwjglApplication(new Main(), config);
 	}
 }

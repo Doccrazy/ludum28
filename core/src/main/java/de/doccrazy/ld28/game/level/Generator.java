@@ -21,6 +21,7 @@ public class Generator {
 	private float y0;
 	private float width;
 	private float height;
+	private float distance;
 
 	private List<JoinPoint> openJoints;
 	private List<Rectangle> rects;
@@ -120,7 +121,7 @@ public class Generator {
 				for (JoinPoint joint : el.getJoints()) {
 					openJoints.add(new JoinPoint(joint.x + tmp.x, joint.y + tmp.y, joint.faceUp));
 				}
-				curx = (float) (tmp.x + tmp.width + Math.random() * 1f);
+				curx = (float) (tmp.x + tmp.width + Math.random() * distance);
 			}
 			Collections.sort(openJoints, new Comparator<JoinPoint>() {
 				@Override
@@ -184,5 +185,9 @@ public class Generator {
 
 	public List<Body> getLevelElements() {
 		return levelElements;
+	}
+
+	public void setDistance(float distance) {
+		this.distance = distance;
 	}
 }

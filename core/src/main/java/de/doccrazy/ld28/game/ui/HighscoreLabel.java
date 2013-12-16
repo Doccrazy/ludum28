@@ -8,14 +8,15 @@ import de.doccrazy.ld28.core.Resource;
 import de.doccrazy.ld28.game.GameScreen;
 import de.doccrazy.ld28.game.GameWorld;
 
-public class DeathLabel extends Label {
+public class HighscoreLabel extends Label {
 	private GameWorld world;
+	private int highscore = 0;
 
-	public DeathLabel(GameWorld world) {
-		super("You died!", new LabelStyle(Resource.fontBig, new Color(1f, 0.4f, 0.3f, 0.7f)));
+	public HighscoreLabel(GameWorld world) {
+		super("", new LabelStyle(Resource.fontSmall, new Color(1f, 0.4f, 0.3f, 0.7f)));
 		this.world = world;
 
-		setPosition(0, 500);
+		setPosition(0, 450);
 		setWidth(GameScreen.SCREEN_WIDTH);
 		setAlignment(Align.center);
 	}
@@ -23,7 +24,9 @@ public class DeathLabel extends Label {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
+		highscore = Math.max(highscore, world.getScore());
 		setVisible(world.getPlayer() == null);
+		setText("Your Highscore: " + highscore);
 	}
 
 }

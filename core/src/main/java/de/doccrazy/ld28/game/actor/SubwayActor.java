@@ -1,6 +1,8 @@
 package de.doccrazy.ld28.game.actor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import de.doccrazy.ld28.core.Resource;
 import de.doccrazy.ld28.game.GameWorld;
@@ -14,6 +16,7 @@ public class SubwayActor extends Box2dActor {
 	private DeathPortalActor portal2;
 	private float widthSprite;
 	private float stateTime = 0f;
+	private float pan;
 
 	public SubwayActor(GameWorld world, DeathPortalActor portal1, DeathPortalActor portal2) {
 		super(world);
@@ -23,6 +26,14 @@ public class SubwayActor extends Box2dActor {
 		widthSprite = Resource.subway.getWidth() * SIZE_Y / Resource.subway.getHeight();
 		float x = portal1.getX() + portal1.getWidthPortal()/2f;
 		setBounds(x, portal1.getY(), (portal2.getX() + portal2.getWidthPortal()/2f) - x, SIZE_Y);
+		pan = -0.5f;
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				Resource.subwayFx.play(1, 1, pan);
+				pan += 0.33f;
+			}
+		}, 0, 0.25f, 4);
 	}
 
 	@Override
