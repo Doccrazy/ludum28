@@ -9,7 +9,6 @@ import de.doccrazy.ld28.game.GameScreen;
 public class GameDesktop {
 	public static void main (String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
 		config.width = GameScreen.SCREEN_WIDTH;
 		config.height = GameScreen.SCREEN_HEIGHT;
 		config.vSyncEnabled = true;

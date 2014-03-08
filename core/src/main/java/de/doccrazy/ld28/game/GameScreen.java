@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -60,8 +60,8 @@ public class GameScreen implements Screen {
         guiCam.position.set(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0);
 
 		Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
         guiCam.update();
 
         batch.setProjectionMatrix(stage.getCamera().combined);
