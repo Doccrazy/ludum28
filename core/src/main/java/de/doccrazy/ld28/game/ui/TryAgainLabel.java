@@ -9,7 +9,6 @@ import de.doccrazy.ld28.game.GameWorld;
 
 public class TryAgainLabel extends Label {
 	private GameWorld world;
-	private int highscore = 0;
 
 	public TryAgainLabel(GameWorld world) {
 		super("Press ENTER to try again", new LabelStyle(Resource.fontSmall, new Color(1f, 0.4f, 0.3f, 0.7f)));

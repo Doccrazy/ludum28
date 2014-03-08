@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
+import de.doccrazy.ld28.core.Debug;
 import de.doccrazy.ld28.game.base.ActorListener;
 import de.doccrazy.ld28.game.base.Box2dActor;
 
@@ -33,9 +34,11 @@ public class GameRenderer implements ActorListener {
     public void render() {
         positionCamera();
 
-        // box2d debug renderering (optional)
         camera.update();
-        //renderer.render(world.box2dWorld, camera.combined);
+        // box2d debug renderering (optional)
+        if (Debug.ON) {
+        	renderer.render(world.box2dWorld, camera.combined);
+        }
 
         // game stage rendering
         world.stage.draw();
