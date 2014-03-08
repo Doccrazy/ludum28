@@ -45,7 +45,7 @@ public class GameRenderer implements ActorListener {
     }
 
 	private void positionCamera() {
-        world.stage.setViewport(UNIT_WIDTH*zoom, UNIT_HEIGHT*zoom, false); // set the game stage viewport to the meters size
+        world.stage.setViewport(UNIT_WIDTH*zoom, UNIT_HEIGHT*zoom, true); // set the game stage viewport to the meters size
 
         // have the camera follow bob
         if (world.getPlayer() != null) {
