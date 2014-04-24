@@ -6,7 +6,7 @@ allprojects {
     ext {
         appName = 'ludum28'
         gdxVersion = '1.0.0'
-        lightsVersion = '1.2_1.0-SNAPSHOT'
+        lightsVersion = '1.2'
         roboVMVersion = '0.0.11'
     }
 
